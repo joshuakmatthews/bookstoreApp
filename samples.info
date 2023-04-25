@@ -1,0 +1,32 @@
+[
+	{
+		"entity": "author",
+		"namespace": "BookstoreApp",
+		"file": "/home/user/projects/BookstoreApp/db/data/BookstoreApp-author.csv",
+		"isFixed": false
+	},
+	{
+		"entity": "book",
+		"namespace": "BookstoreApp",
+		"file": "/home/user/projects/BookstoreApp/db/data/BookstoreApp-book.csv",
+		"isFixed": false
+	},
+	{
+		"entity": "pricing",
+		"namespace": "BookstoreApp",
+		"file": "/home/user/projects/BookstoreApp/db/data/BookstoreApp-pricing.csv",
+		"isFixed": false
+	},
+	{
+		"entity": "publisher",
+		"namespace": "BookstoreApp",
+		"file": "/home/user/projects/BookstoreApp/db/data/BookstoreApp-publisher.csv",
+		"isFixed": false
+	},
+	{
+		"entity": "Currencies",
+		"namespace": "sap.common",
+		"file": "/home/user/projects/BookstoreApp/db/data/sap.common-Currencies.csv",
+		"isFixed": false
+	}
+]

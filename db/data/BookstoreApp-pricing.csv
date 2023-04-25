@@ -1,0 +1,4 @@
+ID;price;currency_code;book_ID
+43e573ad-9998-4e52-ae89-e8908ab70da7;19.99;USD;9fad50cd-b176-4696-8ad6-0b91f1dffdac
+6c0fa674-2a69-49b5-92a7-4c935677a865;26.99;CAD;9fad50cd-b176-4696-8ad6-0b91f1dffdac
+8cbee14f-3e02-401b-ac7e-95ad218ea42e;140.00;CNY;9fad50cd-b176-4696-8ad6-0b91f1dffdac

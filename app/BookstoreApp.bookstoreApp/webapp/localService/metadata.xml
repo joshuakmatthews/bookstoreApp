@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="BookstoreAppService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="book" EntityType="BookstoreAppService.book">
+                    <NavigationPropertyBinding Path="to_publisher" Target="publisher"/>
+                    <NavigationPropertyBinding Path="to_author" Target="author"/>
+                    <NavigationPropertyBinding Path="to_series" Target="series"/>
+                    <NavigationPropertyBinding Path="to_pricing" Target="pricing"/>
+                    <NavigationPropertyBinding Path="to_retailers" Target="retailers"/>
+                </EntitySet>
+                <EntitySet Name="publisher" EntityType="BookstoreAppService.publisher"/>
+                <EntitySet Name="author" EntityType="BookstoreAppService.author"/>
+                <EntitySet Name="series" EntityType="BookstoreAppService.series">
+                    <NavigationPropertyBinding Path="book" Target="book"/>
+                </EntitySet>
+                <EntitySet Name="pricing" EntityType="BookstoreAppService.pricing">
+                    <NavigationPropertyBinding Path="currency" Target="Currencies"/>
+                    <NavigationPropertyBinding Path="book" Target="book"/>
+                </EntitySet>
+                <EntitySet Name="retailers" EntityType="BookstoreAppService.retailers">
+                    <NavigationPropertyBinding Path="book" Target="book"/>
+                </EntitySet>
+                <EntitySet Name="Currencies" EntityType="BookstoreAppService.Currencies">
+                    <NavigationPropertyBinding Path="texts" Target="Currencies_texts"/>
+                    <NavigationPropertyBinding Path="localized" Target="Currencies_texts"/>
+                </EntitySet>
+                <EntitySet Name="Currencies_texts" EntityType="BookstoreAppService.Currencies_texts"/>
+            </EntityContainer>
+            <EntityType Name="book">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="title" Type="Edm.String" MaxLength="80" Nullable="false"/>
+                <Property Name="datePublished" Type="Edm.Date"/>
+                <Property Name="genre" Type="Edm.String" MaxLength="20"/>
+                <NavigationProperty Name="to_publisher" Type="BookstoreAppService.publisher">
+                    <ReferentialConstraint Property="to_publisher_publisherID" ReferencedProperty="publisherID"/>
+                </NavigationProperty>
+                <Property Name="to_publisher_publisherID" Type="Edm.String"/>
+                <NavigationProperty Name="to_author" Type="BookstoreAppService.author">
+                    <ReferentialConstraint Property="to_author_penName" ReferencedProperty="penName"/>
+                </NavigationProperty>
+                <Property Name="to_author_penName" Type="Edm.String" MaxLength="80"/>
+                <NavigationProperty Name="to_series" Type="Collection(BookstoreAppService.series)" Partner="book"/>
+                <NavigationProperty Name="to_pricing" Type="Collection(BookstoreAppService.pricing)" Partner="book"/>
+                <NavigationProperty Name="to_retailers" Type="Collection(BookstoreAppService.retailers)" Partner="book"/>
+            </EntityType>
+            <EntityType Name="publisher">
+                <Key>
+                    <PropertyRef Name="publisherID"/>
+                </Key>
+                <Property Name="publisherID" Type="Edm.String" Nullable="false"/>
+                <Property Name="yearFounded" Type="Edm.Date"/>
+                <Property Name="countryOrigin" Type="Edm.String" MaxLength="40"/>
+            </EntityType>
+            <EntityType Name="author">
+                <Key>
+                    <PropertyRef Name="penName"/>
+                </Key>
+                <Property Name="penName" Type="Edm.String" MaxLength="80" Nullable="false"/>
+                <Property Name="firstName" Type="Edm.String" MaxLength="20"/>
+                <Property Name="middleName" Type="Edm.String" MaxLength="20"/>
+                <Property Name="lastName" Type="Edm.String" MaxLength="20"/>
+                <Property Name="dob" Type="Edm.Date"/>
+                <Property Name="nationality" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <EntityType Name="series">
+                <Key>
+                    <PropertyRef Name="seriesID"/>
+                    <PropertyRef Name="title"/>
+                </Key>
+                <Property Name="seriesID" Type="Edm.String" MaxLength="80" Nullable="false"/>
+                <Property Name="title" Type="Edm.String" Nullable="false"/>
+                <NavigationProperty Name="book" Type="BookstoreAppService.book" Partner="to_series">
+                    <ReferentialConstraint Property="book_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="book_ID" Type="Edm.Guid"/>
+            </EntityType>
+            <EntityType Name="pricing">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="price" Type="Edm.Decimal" Scale="variable"/>
+                <NavigationProperty Name="currency" Type="BookstoreAppService.Currencies">
+                    <ReferentialConstraint Property="currency_code" ReferencedProperty="code"/>
+                </NavigationProperty>
+                <Property Name="currency_code" Type="Edm.String" MaxLength="3"/>
+                <NavigationProperty Name="book" Type="BookstoreAppService.book" Partner="to_pricing">
+                    <ReferentialConstraint Property="book_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="book_ID" Type="Edm.Guid"/>
+            </EntityType>
+            <EntityType Name="retailers">
+                <Key>
+                    <PropertyRef Name="retailerID"/>
+                </Key>
+                <Property Name="retailerID" Type="Edm.String" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="100"/>
+                <NavigationProperty Name="book" Type="BookstoreAppService.book" Partner="to_retailers">
+                    <ReferentialConstraint Property="book_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="book_ID" Type="Edm.Guid"/>
+            </EntityType>
+            <EntityType Name="Currencies">
+                <Key>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="symbol" Type="Edm.String" MaxLength="5"/>
+                <NavigationProperty Name="texts" Type="Collection(BookstoreAppService.Currencies_texts)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="localized" Type="BookstoreAppService.Currencies_texts">
+                    <ReferentialConstraint Property="code" ReferencedProperty="code"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Currencies_texts">
+                <Key>
+                    <PropertyRef Name="locale"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="locale" Type="Edm.String" MaxLength="14" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" MaxLength="255"/>
+                <Property Name="descr" Type="Edm.String" MaxLength="1000"/>
+                <Property Name="code" Type="Edm.String" MaxLength="3" Nullable="false"/>
+            </EntityType>
+            <Annotations Target="BookstoreAppService.book/ID">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="BookstoreAppService.pricing/ID">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="BookstoreAppService.pricing/currency">
+                <Annotation Term="Common.Label" String="{i18n>Currency}"/>
+                    <Annotation Term="Core.Description" String="{i18n>CurrencyCode.Description}"/>
+                    </Annotations>
+                    <Annotations Target="BookstoreAppService.pricing/currency_code">
+                        <Annotation Term="Common.Label" String="{i18n>Currency}"/>
+                            <Annotation Term="Common.ValueList">
+                                <Record Type="Common.ValueListType">
+                                    <PropertyValue Property="Label" String="{i18n>Currency}"/>
+                                        <PropertyValue Property="CollectionPath" String="Currencies"/>
+                                        <PropertyValue Property="Parameters">
+                                            <Collection>
+                                                <Record Type="Common.ValueListParameterInOut">
+                                                    <PropertyValue Property="LocalDataProperty" PropertyPath="currency_code"/>
+                                                    <PropertyValue Property="ValueListProperty" String="code"/>
+                                                </Record>
+                                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                                    <PropertyValue Property="ValueListProperty" String="name"/>
+                                                </Record>
+                                            </Collection>
+                                        </PropertyValue>
+                                    </Record>
+                                </Annotation>
+                                <Annotation Term="Core.Description" String="{i18n>CurrencyCode.Description}"/>
+                                </Annotations>
+                                <Annotations Target="BookstoreAppService.Currencies">
+                                    <Annotation Term="UI.Identification">
+                                        <Collection>
+                                            <Record Type="UI.DataField">
+                                                <PropertyValue Property="Value" Path="name"/>
+                                            </Record>
+                                        </Collection>
+                                    </Annotation>
+                                </Annotations>
+                                <Annotations Target="BookstoreAppService.Currencies/name">
+                                    <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                    </Annotations>
+                                    <Annotations Target="BookstoreAppService.Currencies/descr">
+                                        <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                        </Annotations>
+                                        <Annotations Target="BookstoreAppService.Currencies/code">
+                                            <Annotation Term="Common.Text" Path="name"/>
+                                            <Annotation Term="Common.Label" String="{i18n>CurrencyCode}"/>
+                                            </Annotations>
+                                            <Annotations Target="BookstoreAppService.Currencies/symbol">
+                                                <Annotation Term="Common.Label" String="{i18n>CurrencySymbol}"/>
+                                                </Annotations>
+                                                <Annotations Target="BookstoreAppService.Currencies_texts/locale">
+                                                    <Annotation Term="Common.Label" String="{i18n>LanguageCode}"/>
+                                                    </Annotations>
+                                                    <Annotations Target="BookstoreAppService.Currencies_texts/name">
+                                                        <Annotation Term="Common.Label" String="{i18n>Name}"/>
+                                                        </Annotations>
+                                                        <Annotations Target="BookstoreAppService.Currencies_texts/descr">
+                                                            <Annotation Term="Common.Label" String="{i18n>Description}"/>
+                                                            </Annotations>
+                                                            <Annotations Target="BookstoreAppService.Currencies_texts/code">
+                                                                <Annotation Term="Common.Text" Path="name"/>
+                                                                <Annotation Term="Common.Label" String="{i18n>CurrencyCode}"/>
+                                                                </Annotations>
+                                                            </Schema>
+                                                        </edmx:DataServices>
+                                                    </edmx:Edmx>
